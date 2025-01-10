@@ -80,14 +80,22 @@ RUN cd /software &&\
 RUN cd /software/abCROWN &&\
     conda env create -f complete_verifier/environment.yaml --name alpha-beta-crown
 
-ENV VERYDIFFEXP_VERSION=f39b79be4
+ENV VERYDIFFEXP_VERSION=7b5373e6a
+# Configure Gurobi for installation
+ENV NOGUROBI=1
 RUN cd /software &&\
     git clone https://gitlab.kit.edu/paul.teuber/verydiff-experiments.git VeryDiffExperiments &&\
     cd VeryDiffExperiments &&\
-    git checkout $VERYDIFFEXP_VERSION &&\
+    git checkout $VERYDIFFEXP_VERSION
+RUN cd /software/VeryDiffExperiments &&\
     julia --project=. -e 'using Pkg;Pkg.instantiate();Pkg.develop(path="./../VeryDiff")'
 RUN cd /software/VeryDiffExperiments &&\
     julia --project=. -e 'using Pkg;Pkg.build();'
+RUN cd /software/VeryDiffExperiments &&\
+    rm -rf .git
+
+# Configure Gurobi
+ENV NOGUROBI=0
 
 # USER root
 
