@@ -104,13 +104,13 @@ Note that it will take a few seconds for output to show up as Julia first initia
   - Performs a few warmup runs to trigger precompilation
   - Runs *all* experiments where log files are missing in the directory `experiments_final`
 
-  By default, all experimental logs are available and this call will take approx.
+  By default, all experimental logs are available and this call will take approx.  4min
 - To run the experiments for Marabou and alpha-beta-CROWN
   ```
   ./run_other_experiments.sh
   ```
   This call runs all Marabou and alpha-beta-CROWN experiments overwriting the previous log files (stored in `./benchmarks_abcrown/marabou_results` for Marabou and in `./benchmarks_abcrown/*.{out,pkl} for alpha-beta-CROWN).
-  Note, that this will easily take a few hours or days depending on the machine!
+  Note, that this will easily take a few days (depending on the machine)
 - To reproduce the tables and plots from the paper:
   - We first need to parse the results from Marabou and alpha-beta-CROWN.  
     To this end, execute the two Jupyter Notebooks `./benchmarks_abcrown/Read_abCROWN_logs.ipynb` and `./benchmarks_abcrown/Read_Marabou_logs.ipynb`.  
