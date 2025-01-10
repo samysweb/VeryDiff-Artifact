@@ -59,7 +59,7 @@ Go to your terminal and enter the following commands:
 docker pull samweb/verydiff:artifact
 ```
 - **From DOI (slightly more involved):**
-    - Download the TAR file from TODO  
+    - Download the TAR file from [https://doi.org/10.5281/zenodo.14627459](https://doi.org/10.5281/zenodo.14627459)  
       We assume it is saved in /tmp/verydiff_artifact.tar.gz
     - Import the tar.gz file as Docker Image via:
       ``` bash
@@ -125,13 +125,19 @@ Note that you can also open the log files in Jupyter Lab allowing you to easily 
 ### 2.3 Rerun
 To rerun all experiments we advise against using the Jupyter Lab interface as this would need to be open during the entire execution.
 Rerunning all experiments comes at a significant runtime as we have not parallelized our experiments. On a standard machine running all experiments **takes about 2-3 weeks**.
-In this case, we advise to use Docker's command line interface and to store the experimental logs on your computer.
+In this case, we advise to use Docker's command line interface and to store the experimental logs on your computer in a Docker volume.
 
 The following instructions accompish this:
 ```
-mkdir verydiff_results
-docker run -p 8888:8888 --volume=./verydiff_results/logs:/software/VeryDiffExperiments/experiments_final --volume=./verydiff_results/ablogs:/software/VeryDiffExperiments/benchmarks_abcrown --volume=$HOME/gurobi.lic:/opt/gurobi/gurobi.lic:ro samweb/verydiff:artifact /software/VeryDiffExperiments/rerun_all.sh
+docker run --mount type=volume,src=verydiff_logs1,dst=/software/VeryDiffExperiments/experiments_final --mount type=volume,src=verydiff_logs2,dst=/software/VeryDiffExperiments/benchmarks_abcrown --volume=$HOME/gurobi.lic:/opt/gurobi/gurobi.lic:ro samweb/verydiff:artifact /software/VeryDiffExperiments/rerun_all.sh
 ```
 
+Once this command finishes, you can explore the results using the Jupyter Lab environment as follows:
+```
+docker run -p 8888:8888 --mount type=volume,src=verydiff_logs1,dst=/software/VeryDiffExperiments/experiments_final --mount type=volume,src=verydiff_logs2,dst=/software/VeryDiffExperiments/benchmarks_abcrown --volume=$HOME/gurobi.lic:/opt/gurobi/gurobi.lic:ro samweb/verydiff:artifact
+```
+Note, that this command needs to be executed on the **same** computer as it uses the volumes populated through the experiment run.
+To explore the results on a different computer it would be necessary to [export the docker volumes verydiff_logs1 and verydiff_logs2](https://docs.docker.com/engine/storage/volumes/#back-up-restore-or-migrate-data-volumes)
+
 ### 2.4 VeryDiff Tool
-The version of the VeryDiff tool used in this released is available under DOI [10.5281/zenodo.14627125](https://doi.org/10.5281/zenodo.14627125)
+The version of the VeryDiff tool used, including its full source code, is available under DOI [10.5281/zenodo.14627125](https://doi.org/10.5281/zenodo.14627125).

@@ -80,7 +80,10 @@ RUN cd /software &&\
 RUN cd /software/abCROWN &&\
     conda env create -f complete_verifier/environment.yaml --name alpha-beta-crown
 
-ENV VERYDIFFEXP_VERSION=7b5373e6a
+
+RUN conda run -n verydiff pip install pandas matplotlib Jinja2
+
+ENV VERYDIFFEXP_VERSION=98e496559
 # Configure Gurobi for installation
 ENV NOGUROBI=1
 RUN cd /software &&\
@@ -91,6 +94,12 @@ RUN cd /software/VeryDiffExperiments &&\
     julia --project=. -e 'using Pkg;Pkg.instantiate();Pkg.develop(path="./../VeryDiff")'
 RUN cd /software/VeryDiffExperiments &&\
     julia --project=. -e 'using Pkg;Pkg.build();'
+
+ENV VERYDIFFEXP_UPDATED=4c19cddd6
+RUN cd /software/VeryDiffExperiments &&\
+    git fetch &&\
+    git checkout $VERYDIFFEXP_UPDATED
+
 RUN cd /software/VeryDiffExperiments &&\
     rm -rf .git
 
@@ -106,7 +115,7 @@ ENV LD_LIBRARY_PATH=/software/NeuroDiff/DiffNN-Code/lib:
 # # Install Julia verydiff Kernel and trigger precompilation as explicitly as possible
 # RUN julia -E 'using Pkg;Pkg.add(["IJulia","Plots"]);using IJulia;installkernel("Julia VeryDiff", "--depwarn=no");Pkg.precompile()'
 # # Install Python verydiff Kernel
-# RUN conda run -n verydiff python -m ipykernel install --user --name=Python_verydiff
+RUN conda run -n verydiff python -m ipykernel install --user --name=Python_verydiff
 
 
 WORKDIR /software/VeryDiffExperiments
