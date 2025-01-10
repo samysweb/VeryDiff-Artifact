@@ -59,50 +59,50 @@ RUN cd /software &&\
     git checkout $NEURODIFF_VERSION &&\
     bash install_OpenBLAS.sh
 
-# # NeuroDiff is slightly broken so we need to move the definition of pthread_mutex_t lock;
-# COPY ./split.c /software/NeuroDiff/DiffNN-Code/split.c
-# COPY ./split.h /software/NeuroDiff/DiffNN-Code/split.h
+# NeuroDiff is slightly broken so we need to move the definition of pthread_mutex_t lock;
+COPY ./split.c /software/NeuroDiff/DiffNN-Code/split.c
+COPY ./split.h /software/NeuroDiff/DiffNN-Code/split.h
 
-# # We measure Single Threadded Performance
-# ENV NUM_THREADS=-1
-# RUN cd /software/NeuroDiff &&\
-#     source set_paths.sh &&\
-#     cd DiffNN-Code &&\
-#     CFLAGS=-DMAX_THREAD=$NUM_THREADS make clean lineqall extravarssym all
+# We measure Single Threadded Performance
+ENV NUM_THREADS=-1
+RUN cd /software/NeuroDiff &&\
+    source set_paths.sh &&\
+    cd DiffNN-Code &&\
+    CFLAGS=-DMAX_THREAD=$NUM_THREADS make clean lineqall extravarssym all
 
-# # Install Marabou -> installs ~/.local/bin/Marabou
-# RUN pip install maraboupy==2.0.0
+# Install Marabou -> installs ~/.local/bin/Marabou
+RUN pip install maraboupy==2.0.0
 
-# # Install alpha-beta-CROWN
-# ENV ABCROWN_VERSION=dc32df038440a9726e97547b88f9913743773e7f
-# RUN cd /software &&\
-#     git clone --recursive https://github.com/Verified-Intelligence/alpha-beta-CROWN.git abCROWN
-# RUN cd /software/abCROWN &&\
-#     conda env create -f complete_verifier/environment.yaml --name alpha-beta-crown
+# Install alpha-beta-CROWN
+ENV ABCROWN_VERSION=dc32df038440a9726e97547b88f9913743773e7f
+RUN cd /software &&\
+    git clone --recursive https://github.com/Verified-Intelligence/alpha-beta-CROWN.git abCROWN
+RUN cd /software/abCROWN &&\
+    conda env create -f complete_verifier/environment.yaml --name alpha-beta-crown
 
-# ENV VERYDIFFEXP_VERSION=f39b79be4
-# RUN cd /software &&\
-#     git clone https://gitlab.kit.edu/paul.teuber/verydiff-experiments.git VeryDiffExperiments &&\
-#     cd VeryDiffExperiments &&\
-#     git checkout $VERYDIFFEXP_VERSION &&\
-#     julia --project=. -e 'using Pkg;Pkg.instantiate();Pkg.develop(path="./../VeryDiff")'
-# RUN cd /software/VeryDiffExperiments &&\
-#     julia --project=. -e 'using Pkg;Pkg.build();'
+ENV VERYDIFFEXP_VERSION=f39b79be4
+RUN cd /software &&\
+    git clone https://gitlab.kit.edu/paul.teuber/verydiff-experiments.git VeryDiffExperiments &&\
+    cd VeryDiffExperiments &&\
+    git checkout $VERYDIFFEXP_VERSION &&\
+    julia --project=. -e 'using Pkg;Pkg.instantiate();Pkg.develop(path="./../VeryDiff")'
+RUN cd /software/VeryDiffExperiments &&\
+    julia --project=. -e 'using Pkg;Pkg.build();'
 
-# # USER root
-
-# ENV JULIA_PROJECT=/software/VeryDiffExperiments
-# ENV LD_LIBRARY_PATH=/software/NeuroDiff/DiffNN-Code/lib:
-
-# # USER ${NB_UID}
-# # # Install Julia verydiff Kernel and trigger precompilation as explicitly as possible
-# # RUN julia -E 'using Pkg;Pkg.add(["IJulia","Plots"]);using IJulia;installkernel("Julia VeryDiff", "--depwarn=no");Pkg.precompile()'
-# # # Install Python verydiff Kernel
-# # RUN conda run -n verydiff python -m ipykernel install --user --name=Python_verydiff
-
-
-# WORKDIR /software/VeryDiffExperiments
 # USER root
-# RUN chmod -R 777 /software/VeryDiffExperiments
+
+ENV JULIA_PROJECT=/software/VeryDiffExperiments
+ENV LD_LIBRARY_PATH=/software/NeuroDiff/DiffNN-Code/lib:
+
 # USER ${NB_UID}
-# CMD ["start-notebook.py", "--NotebookApp.token='verydiff'"]
+# # Install Julia verydiff Kernel and trigger precompilation as explicitly as possible
+# RUN julia -E 'using Pkg;Pkg.add(["IJulia","Plots"]);using IJulia;installkernel("Julia VeryDiff", "--depwarn=no");Pkg.precompile()'
+# # Install Python verydiff Kernel
+# RUN conda run -n verydiff python -m ipykernel install --user --name=Python_verydiff
+
+
+WORKDIR /software/VeryDiffExperiments
+USER root
+RUN chmod -R 777 /software/VeryDiffExperiments
+USER ${NB_UID}
+CMD ["start-notebook.py", "--NotebookApp.token='verydiff'"]
