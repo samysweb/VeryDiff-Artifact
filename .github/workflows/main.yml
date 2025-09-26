@@ -2,14 +2,14 @@ name: container build
 
 on:
   push:
-    branches: [main, handson]
+    branches: [main, handson, handson-local]
 
 env:
   REGISTRY_IMAGE: samweb/verydiff
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       fail-fast: false
       matrix:
@@ -76,7 +76,7 @@ jobs:
           retention-days: 1
 
   merge:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs:
       - build
     steps:
