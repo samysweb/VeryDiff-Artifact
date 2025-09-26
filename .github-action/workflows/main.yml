@@ -14,10 +14,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # When/If native linux/arm64 runners become available on the free plan,
-          # this can be updated to choose the corresponding image...
+          # This runs on bwjupyter so don't need arm images
           - platform: linux/amd64
             cachetag: linux-amd64
+          # - platform: linux/arm64
+          #   cachetag: linux-arm64
     steps:
       - name: Prepare
         run: |
@@ -44,10 +45,6 @@ jobs:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       
-      - name: Remove unnecessary files
-        run: |
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
       - name: Build and push by digest
         id: build
         uses: docker/build-push-action@v6

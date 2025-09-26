@@ -82,9 +82,10 @@ To start the Docker Container enter in your terminal:
   docker run -e NOGUROBI="1" -p 8888:8888 samweb/verydiff:artifact
   ```
 
-To interact with the artifact head to your browser and enter:
+To interact with the artifact, click on the link provided in the terminal.
+The link should look something like this:
 
-[http://127.0.0.1:8888/lab?token=verydiff](http://127.0.0.1:8888/lab?token=verydiff)
+[http://127.0.0.1:8888/lab?token=<YOUR_TOKEN_HERE>](http://127.0.0.1:8888/lab?token=<YOUR_TOKEN_HERE>)
 
 You should then see a *Juypter Lab* interface.
 Click on **Terminal** to open a Terminal session, this allows you to interact with the Container's terminal.

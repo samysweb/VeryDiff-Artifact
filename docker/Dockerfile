@@ -31,7 +31,8 @@ RUN mkdir -p /data && chmod 777 /data && mkdir -p /software && chmod 777 /softwa
 # Julia dependencies
 # install Julia packages in /opt/julia instead of ${HOME}
 ENV JULIA_DEPOT_PATH=/opt/julia \
-    JULIA_PKGDIR=/opt/julia
+    JULIA_PKGDIR=/opt/julia \
+    JULIA_CPU_TARGET=generic
 
 # Setup Julia
 COPY ./setup_julia.py /opt/setup-scripts/setup_julia.py
@@ -43,9 +44,9 @@ USER ${NB_UID}
 RUN /opt/setup-scripts/setup-julia-packages.bash
 
 # Download & Install VeryDiff, VeryDiffExperiments and NeuroDiff
-ENV VERYDIFF_VERSION=a896894
+ENV VERYDIFF_VERSION=60eac6a
 RUN cd /software &&\
-    git clone https://github.com/samysweb/VeryDiff-Release.git VeryDiff &&\
+    git clone https://github.com/samysweb/VeryDiff.git VeryDiff &&\
     cd VeryDiff &&\
     git checkout $VERYDIFF_VERSION &&\
     julia --project=. -e 'using Pkg;Pkg.instantiate();Pkg.build();'
@@ -77,6 +78,7 @@ RUN pip install maraboupy==2.0.0
 ENV ABCROWN_VERSION=dc32df038440a9726e97547b88f9913743773e7f
 RUN cd /software &&\
     git clone --recursive https://github.com/Verified-Intelligence/alpha-beta-CROWN.git abCROWN
+RUN cd /software/abCROWN && git checkout $ABCROWN_VERSION && git submodule update --recursive
 RUN cd /software/abCROWN &&\
     conda env create -f complete_verifier/environment.yaml --name alpha-beta-crown
 
@@ -122,4 +124,4 @@ WORKDIR /software/VeryDiffExperiments
 USER root
 RUN chmod -R 777 /software/VeryDiffExperiments
 USER ${NB_UID}
-CMD ["start-notebook.py", "--NotebookApp.token='verydiff'"]
+#CMD ["start-notebook.py", "--NotebookApp.token='verydiff'"]
