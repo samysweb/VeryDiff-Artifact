@@ -44,11 +44,13 @@ USER ${NB_UID}
 RUN /opt/setup-scripts/setup-julia-packages.bash
 
 # Download & Install VeryDiff, VeryDiffExperiments and NeuroDiff
+# Deactivate Gurobi for now
 ENV VERYDIFF_VERSION=60eac6a
 RUN cd /software &&\
     git clone https://github.com/samysweb/VeryDiff.git VeryDiff &&\
     cd VeryDiff &&\
     git checkout $VERYDIFF_VERSION &&\
+    sed -i 's/USE_GUROBI = true/USE_GUROBI = false/' src/VeryDiff.jl &&\
     julia --project=. -e 'using Pkg;Pkg.instantiate();Pkg.build();'
 
 ENV NEURODIFF_VERSION=d05fd14
