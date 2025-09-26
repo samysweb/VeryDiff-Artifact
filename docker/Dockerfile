@@ -87,16 +87,16 @@ RUN cd /software/abCROWN &&\
 
 RUN conda run -n verydiff pip install pandas matplotlib Jinja2
 
-ENV VERYDIFFEXP_VERSION=4c19cddd6
-# Configure Gurobi for installation
-ENV NOGUROBI=1
-RUN cd /software &&\
-    git clone https://gitlab.kit.edu/paul.teuber/verydiff-experiments.git VeryDiffExperiments &&\
-    cd VeryDiffExperiments &&\
-    git checkout $VERYDIFFEXP_VERSION &&\
-    rm -rf ./experiments_final &&\
-    rm Manifest.toml &&\
-    sed -i 's/VNNLib = "286915b0-5841-4eea-9013-d818f395ad8c"//' Project.toml
+# ENV VERYDIFFEXP_VERSION=4c19cddd6
+# # Configure Gurobi for installation
+# ENV NOGUROBI=1
+# RUN cd /software &&\
+#     git clone https://gitlab.kit.edu/paul.teuber/verydiff-experiments.git VeryDiffExperiments &&\
+#     cd VeryDiffExperiments &&\
+#     git checkout $VERYDIFFEXP_VERSION &&\
+#     rm -rf ./experiments_final &&\
+#     rm Manifest.toml &&\
+#     sed -i 's/VNNLib = "286915b0-5841-4eea-9013-d818f395ad8c"//' Project.toml
 
 # Not needed for handson session
 #    RUN cd /software/VeryDiffExperiments &&\
@@ -104,11 +104,11 @@ RUN cd /software &&\
 #RUN cd /software/VeryDiffExperiments &&\
 #julia --project=. -e 'using Pkg;Pkg.build();'
 
-RUN cd /software/VeryDiffExperiments &&\
-    rm -rf .git
+# RUN cd /software/VeryDiffExperiments &&\
+#    rm -rf .git
 
 # Configure Gurobi
-ENV NOGUROBI=0
+# ENV NOGUROBI=0
 
 # USER root
 
@@ -122,8 +122,8 @@ ENV LD_LIBRARY_PATH=/software/NeuroDiff/DiffNN-Code/lib:
 RUN conda run -n verydiff python -m ipykernel install --user --name=Python_verydiff
 
 
-WORKDIR /software/VeryDiffExperiments
+WORKDIR /software/VeryDiff
 USER root
-RUN chmod -R 777 /software/VeryDiffExperiments
+RUN chmod -R 777 /software/VeryDiff
 USER ${NB_UID}
 #CMD ["start-notebook.py", "--NotebookApp.token='verydiff'"]
