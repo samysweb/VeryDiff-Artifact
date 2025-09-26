@@ -87,22 +87,18 @@ RUN cd /software/abCROWN &&\
 
 RUN conda run -n verydiff pip install pandas matplotlib Jinja2
 
-ENV VERYDIFFEXP_VERSION=98e496559
+ENV VERYDIFFEXP_VERSION=4c19cddd6
 # Configure Gurobi for installation
 ENV NOGUROBI=1
 RUN cd /software &&\
     git clone https://gitlab.kit.edu/paul.teuber/verydiff-experiments.git VeryDiffExperiments &&\
     cd VeryDiffExperiments &&\
-    git checkout $VERYDIFFEXP_VERSION
+    git checkout $VERYDIFFEXP_VERSION &&\
+    rm -rf ./experiments_final
 RUN cd /software/VeryDiffExperiments &&\
     julia --project=. -e 'using Pkg;Pkg.instantiate();Pkg.develop(path="./../VeryDiff")'
 RUN cd /software/VeryDiffExperiments &&\
     julia --project=. -e 'using Pkg;Pkg.build();'
-
-ENV VERYDIFFEXP_UPDATED=4c19cddd6
-RUN cd /software/VeryDiffExperiments &&\
-    git fetch &&\
-    git checkout $VERYDIFFEXP_UPDATED
 
 RUN cd /software/VeryDiffExperiments &&\
     rm -rf .git
