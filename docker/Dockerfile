@@ -94,9 +94,10 @@ RUN cd /software &&\
     git clone https://gitlab.kit.edu/paul.teuber/verydiff-experiments.git VeryDiffExperiments &&\
     cd VeryDiffExperiments &&\
     git checkout $VERYDIFFEXP_VERSION &&\
-    rm -rf ./experiments_final
+    rm -rf ./experiments_final &&\
+    rm Manifest.toml
 RUN cd /software/VeryDiffExperiments &&\
-    julia --project=. -e 'using Pkg;Pkg.instantiate();Pkg.develop(path="./../VeryDiff")'
+    julia --project=. -e 'using Pkg;Pkg.develop(path="./../VeryDiff");Pkg.add("https://github.com/samysweb/VNNLib.jl#899e3c6e");Pkg.resolve()'
 RUN cd /software/VeryDiffExperiments &&\
     julia --project=. -e 'using Pkg;Pkg.build();'
 
