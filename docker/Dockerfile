@@ -97,10 +97,12 @@ RUN cd /software &&\
     rm -rf ./experiments_final &&\
     rm Manifest.toml &&\
     sed -i 's/VNNLib = "286915b0-5841-4eea-9013-d818f395ad8c"//' Project.toml
-RUN cd /software/VeryDiffExperiments &&\
-    julia --project=. -e 'using Pkg;Pkg.develop(path="./../VeryDiff");Pkg.add("https://github.com/samysweb/VNNLib.jl#c6bf990");Pkg.resolve()'
-RUN cd /software/VeryDiffExperiments &&\
-    julia --project=. -e 'using Pkg;Pkg.build();'
+
+# Not needed for handson session
+#    RUN cd /software/VeryDiffExperiments &&\
+#    julia --project=. -e 'using Pkg;Pkg.develop(path="./../VeryDiff");Pkg.add("https://github.com/samysweb/VNNLib.jl#c6bf990");Pkg.resolve()'
+#RUN cd /software/VeryDiffExperiments &&\
+#julia --project=. -e 'using Pkg;Pkg.build();'
 
 RUN cd /software/VeryDiffExperiments &&\
     rm -rf .git
@@ -110,7 +112,7 @@ ENV NOGUROBI=0
 
 # USER root
 
-ENV JULIA_PROJECT=/software/VeryDiffExperiments
+ENV JULIA_PROJECT=/software/VeryDiff
 ENV LD_LIBRARY_PATH=/software/NeuroDiff/DiffNN-Code/lib:
 
 # USER ${NB_UID}
