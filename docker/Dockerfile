@@ -45,33 +45,36 @@ RUN /opt/setup-scripts/setup-julia-packages.bash
 
 # Download & Install VeryDiff, VeryDiffExperiments and NeuroDiff
 # Deactivate Gurobi for now
-ENV VERYDIFF_VERSION=95811c2
+#4117e80
+ENV VERYDIFF_VERSION=6fbf6cd
 RUN cd /software &&\
     git clone https://github.com/samysweb/VeryDiff.git VeryDiff &&\
     cd VeryDiff &&\
     git checkout $VERYDIFF_VERSION &&\
+    rm Manifest.toml &&\
     sed -i 's/USE_GUROBI = true/USE_GUROBI = false/' src/VeryDiff.jl &&\
-    julia --project=. -e 'using Pkg;Pkg.instantiate();Pkg.build();'
+    julia --project=. -e 'using Pkg;Pkg.status();Pkg.instantiate();Pkg.build();'
 
-ENV NEURODIFF_VERSION=d05fd14
-ENV NUM_THREADS=0
-ENV USE_THREAD=0
-RUN cd /software &&\
-    git clone https://github.com/pauls658/NeuroDiff-ASE2020-Artifact.git NeuroDiff &&\
-    cd NeuroDiff &&\
-    git checkout $NEURODIFF_VERSION &&\
-    bash install_OpenBLAS.sh
+# TODO: uncomment NEURODIFF once I know why it crashes the docker build step
+#ENV NEURODIFF_VERSION=d05fd14
+#ENV NUM_THREADS=0
+#ENV USE_THREAD=0
+#RUN cd /software &&\
+#    git clone https://github.com/pauls658/NeuroDiff-ASE2020-Artifact.git NeuroDiff &&\
+#    cd NeuroDiff &&\
+#    git checkout $NEURODIFF_VERSION &&\
+#    bash install_OpenBLAS.sh
 
 # NeuroDiff is slightly broken so we need to move the definition of pthread_mutex_t lock;
-COPY ./split.c /software/NeuroDiff/DiffNN-Code/split.c
-COPY ./split.h /software/NeuroDiff/DiffNN-Code/split.h
+#COPY ./split.c /software/NeuroDiff/DiffNN-Code/split.c
+#COPY ./split.h /software/NeuroDiff/DiffNN-Code/split.h
 
 # We measure Single Threadded Performance
-ENV NUM_THREADS=-1
-RUN cd /software/NeuroDiff &&\
-    source set_paths.sh &&\
-    cd DiffNN-Code &&\
-    CFLAGS=-DMAX_THREAD=$NUM_THREADS make clean lineqall extravarssym all
+#ENV NUM_THREADS=-1
+#RUN cd /software/NeuroDiff &&\
+#    source set_paths.sh &&\
+#    cd DiffNN-Code &&\
+#    CFLAGS=-DMAX_THREAD=$NUM_THREADS make clean lineqall extravarssym all
 
 # Install Marabou -> installs ~/.local/bin/Marabou
 RUN pip install maraboupy==2.0.0

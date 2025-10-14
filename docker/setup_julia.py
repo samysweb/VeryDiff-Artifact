@@ -39,6 +39,7 @@ def get_latest_julia_url() -> tuple[str, str]:
         "https://julialang-s3.julialang.org/bin/versions.json"
     ).json()
     stable_versions = {k: v for k, v in versions.items() if v["stable"]}
+    #stable_versions = {k: v for k, v in versions.items() if k.startswith("1.10")}  # my current local version
     # Compare versions semantically
     latest_stable_version = max(
         stable_versions, key=lambda ver: [int(sub_ver) for sub_ver in ver.split(".")]
@@ -92,6 +93,7 @@ def configure_julia(julia_version: str) -> None:
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
 
-    julia_url, julia_version = ("https://julialang-s3.julialang.org/bin/linux/x64/1.10/julia-1.10.4-linux-"+unify_aarch64(platform.machine())+".tar.gz",'1.10.4')
+    # julia_url, julia_version = ("https://julialang-s3.julialang.org/bin/linux/x64/1.10/julia-1.10.4-linux-"+unify_aarch64(platform.machine())+".tar.gz",'1.10.4')
+    julia_url, julia_version = ("https://julialang-s3.julialang.org/bin/linux/x64/1.11/julia-1.11.7-linux-"+unify_aarch64(platform.machine())+".tar.gz",'1.11.7')
     download_julia(julia_url=julia_url)
     configure_julia(julia_version=julia_version)
