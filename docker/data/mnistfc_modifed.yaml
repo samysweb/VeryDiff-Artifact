@@ -1,0 +1,31 @@
+general:
+  root_path: mnist-prune
+  csv_name: instances.csv
+  device: cpu
+  complete_verifier: bab
+  results_file: mnist-prune_results.out
+  output_file: mnist-prune_results_out.pkl
+  save_output: true
+model:
+  input_shape: [-1, 784]
+data:
+  start: 0
+  end: 4800
+solver:
+  batch_size: 512  # reduced from 4092
+  beta-crown:
+    iteration: 20
+    lr_beta: 0.03
+    enable_opt_interm_bounds: True
+  mip:
+    parallel_solvers: 1
+    solver_threads: 1
+    refine_neuron_time_percentage: 0.8
+  start_save_best: -1
+bab:
+  branching:
+    candidates: 5
+    reduceop: max
+attack:
+  attack_mode: diversed_PGD
+  pgd_restarts: 10  # reduced from 100
