@@ -53,25 +53,27 @@ RUN cd /software &&\
     sed -i 's/USE_GUROBI = true/USE_GUROBI = false/' src/VeryDiff.jl &&\
     julia --project=. -e 'using Pkg;Pkg.instantiate();Pkg.build();'
 
-ENV NEURODIFF_VERSION=d05fd14
-ENV NUM_THREADS=0
-ENV USE_THREAD=0
-RUN cd /software &&\
-    git clone https://github.com/pauls658/NeuroDiff-ASE2020-Artifact.git NeuroDiff &&\
-    cd NeuroDiff &&\
-    git checkout $NEURODIFF_VERSION &&\
-    bash install_OpenBLAS.sh
+ADD data /data
+
+#ENV NEURODIFF_VERSION=d05fd14
+#ENV NUM_THREADS=0
+#ENV USE_THREAD=0
+#RUN cd /software &&\
+#    git clone https://github.com/pauls658/NeuroDiff-ASE2020-Artifact.git NeuroDiff &&\
+#    cd NeuroDiff &&\
+#    git checkout $NEURODIFF_VERSION &&\
+#    bash install_OpenBLAS.sh
 
 # NeuroDiff is slightly broken so we need to move the definition of pthread_mutex_t lock;
-COPY ./split.c /software/NeuroDiff/DiffNN-Code/split.c
-COPY ./split.h /software/NeuroDiff/DiffNN-Code/split.h
+#COPY ./split.c /software/NeuroDiff/DiffNN-Code/split.c
+#COPY ./split.h /software/NeuroDiff/DiffNN-Code/split.h
 
 # We measure Single Threadded Performance
-ENV NUM_THREADS=-1
-RUN cd /software/NeuroDiff &&\
-    source set_paths.sh &&\
-    cd DiffNN-Code &&\
-    CFLAGS=-DMAX_THREAD=$NUM_THREADS make clean lineqall extravarssym all
+#ENV NUM_THREADS=-1
+#RUN cd /software/NeuroDiff &&\
+#    source set_paths.sh &&\
+#    cd DiffNN-Code &&\
+#    CFLAGS=-DMAX_THREAD=$NUM_THREADS make clean lineqall extravarssym all
 
 # Install Marabou -> installs ~/.local/bin/Marabou
 RUN pip install maraboupy==2.0.0
